@@ -1,0 +1,20 @@
+name: scrape-2ndstreet
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # UTC基準/15分毎
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests beautifulsoup4 gspread oauth2client
+      - run: python scrape_2ndstreet_to_sheets.py
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          SHEET_NAME: "2ndstreet_monitor"
